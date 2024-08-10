@@ -1,0 +1,53 @@
+#include <sstream>
+#include <vector>
+#include <cctype>
+
+class NestedInteger {
+public:
+    NestedInteger() : is_integer(false) {}
+    NestedInteger(int value) : is_integer(true), integer(value) {}
+
+    void add(const NestedInteger& ni) {
+        list.push_back(ni);
+    }
+    
+    bool isInteger() const {
+        return is_integer;
+    }
+    
+    int getInteger() const {
+        return integer;
+    }
+    
+    const std::vector<NestedInteger>& getList() const {
+        return list;
+    }
+    
+private:
+    bool is_integer;
+    int integer;
+    std::vector<NestedInteger> list;
+};
+
+class Solution {
+public:
+    NestedInteger deserialize(string s) {
+        istringstream in(s);
+        return deserialize1(in);
+    }
+
+private:
+    NestedInteger deserialize1(istringstream& in){
+        int number;
+        if (in >> number) return NestedInteger(number);
+        in.clear();
+        in.get();
+        NestedInteger list;
+        while (in.peek() != ']'){
+            list.add(deserialize1(in));
+            if (in.peek() == ',') in.get();
+        }
+        in.get();
+        return list;
+    }
+};
